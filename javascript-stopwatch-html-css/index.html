@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timer App</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: url('https://img.freepik.com/free-photo/white-alarm-clock-yellow-green-background-flat-lay_169016-30337.jpg?semt=ais_hybrid') center/cover no-repeat;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .wrapper {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      color: #fff;
+    }
+
+    .display-time {
+      font-size: 2rem;
+      margin: 15px 0;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      margin: 0 5px;
+      cursor: pointer;
+      background: #444;
+      color: #fff;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #666;
+    }
+
+    .laps {
+      margin-top: 15px;
+      max-height: 100px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .laps p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+  </style>
+  <body>
+    <div class="wrapper">
+      <h1>Timer App</h1>
+      <div class="display-time">
+        <span id="min">00</span>:<span id="sec">00</span>:<span id="ms">00</span>
+      </div>
+      <button id="begin">Begin</button>
+      <button id="halt">Halt</button>
+      <button id="restart">Restart</button>
+      <button id="lap">Lap</button>
+      <div class="laps" id="laps"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let mins = 0, secs = 0, milliseconds = 0;
+        const minuteDisplay = document.querySelector("#min");
+        const secondDisplay = document.querySelector("#sec");
+        const msDisplay = document.querySelector("#ms");
+        const beginButton = document.querySelector("#begin");
+        const haltButton = document.querySelector("#halt");
+        const restartButton = document.querySelector("#restart");
+        const lapButton = document.querySelector("#lap");
+        const lapsContainer = document.querySelector("#laps");
+        let timer;
+
+        function updateTimer() {
+          milliseconds++;
+          if (milliseconds > 99) {
+            milliseconds = 0;
+            secs++;
+            if (secs < 10) secondDisplay.textContent = "0" + secs;
+            else secondDisplay.textContent = secs;
+          }
+
+          if (secs > 59) {
+            secs = 0;
+            mins++;
+            if (mins < 10) minuteDisplay.textContent = "0" + mins;
+            else minuteDisplay.textContent = mins;
+          }
+
+          msDisplay.textContent = milliseconds < 10 ? "0" + milliseconds : milliseconds;
+        }
+
+        beginButton.addEventListener("click", () => {
+          clearInterval(timer);
+          timer = setInterval(updateTimer, 10);
+        });
+
+        haltButton.addEventListener("click", () => {
+          clearInterval(timer);
+        });
+
+        restartButton.addEventListener("click", () => {
+          clearInterval(timer);
+          mins = secs = milliseconds = 0;
+          minuteDisplay.textContent = "00";
+          secondDisplay.textContent = "00";
+          msDisplay.textContent = "00";
+          lapsContainer.innerHTML = "";
+        });
+
+        lapButton.addEventListener("click", () => {
+          const lapTime = `${minuteDisplay.textContent}:${secondDisplay.textContent}:${msDisplay.textContent}`;
+          const lapElement = document.createElement("p");
+          lapElement.textContent = `Lap: ${lapTime}`;
+          lapsContainer.appendChild(lapElement);
+        });
+      });
+    </script>
+  </body>
+</html>
